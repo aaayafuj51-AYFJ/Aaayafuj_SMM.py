@@ -19,6 +19,13 @@ Aaayafuj_SMM is a high-performance terminal tool written in Python, designed for
 
 ## 🚀 Installation
 
+### Windows (Recommended)
+Simply run the setup utility:
+```bash
+setup.bat
+```
+
+### Manual Installation
 1. **Clone the repo:**
    ```bash
    git clone https://github.com/aaayafuj51-AYFJ/Aaayafuj_SMM.py.git
@@ -26,14 +33,27 @@ Aaayafuj_SMM is a high-performance terminal tool written in Python, designed for
    ```
 
 2. **Install requirements:**
+   *If you encounter "Fatal error in launcher", use this command:*
    ```bash
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
 
 3. **Run the tool:**
    ```bash
    python main.py
    ```
+
+---
+
+## ❓ Troubleshooting
+
+### "Fatal error in launcher"
+This happens when your Windows `pip.exe` is broken or pointing to a deleted Python version. 
+**Fix:** Always use `python -m pip` instead of just `pip`. 
+Example: `python -m pip install -r requirements.txt`
+
+### "ModuleNotFoundError"
+Ensure you have installed all requirements using the command above. If you use a virtual environment, ensure it is activated.
 
 ---
 

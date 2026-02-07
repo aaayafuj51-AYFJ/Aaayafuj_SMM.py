@@ -4,6 +4,14 @@ import ssl
 import requests
 from urllib3.exceptions import InsecureRequestWarning
 
+# Dependency Check
+try:
+    import pystyle
+    import google.generativeai
+except ImportError:
+    print("\n[!] Missing dependencies. Please run: python -m pip install -r requirements.txt")
+    sys.exit(1)
+
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
