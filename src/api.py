@@ -5,31 +5,19 @@ import os
 import sys
 from urllib.parse import urlencode
 from src.gorgon import Gorgon
-
-# Try to import Google GenAI, fallback gracefully if not installed
-try:
-    import google.generativeai as genai
-    HAS_GENAI = True
-except ImportError:
-    HAS_GENAI = False
+from src.utils import BlockCookies
 
 class AaayafujAPI:
     def __init__(self):
         self.session = requests.Session()
-        # Disable insecure warnings for SSL-unverified requests
-        from urllib3.exceptions import InsecureRequestWarning
-        requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
-        
-        self.api_key = os.environ.get("API_KEY")
-        if self.api_key and HAS_GENAI:
-            genai.configure(api_key=self.api_key)
-            self.ai_model = genai.GenerativeModel('gemini-3-flash-preview')
-        else:
-            self.ai_model = None
-
-        # Determine root path to ensure resource loading works regardless of where main.py is called from
+        self.session.cookies.set_policy(BlockCookies())
         self.root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.load_resources()
+        
+        # Internal configuration from snippet
+        self.domains = ["api-h2.tiktokv.com", "api22-core-c-useast1a.tiktokv.com", "api19-core-c-useast1a.tiktokv.com", "api16-core-c-useast1a.tiktokv.com", "api21-core-c-useast1a.tiktokv.com", "api19-core-useast5.us.tiktokv.com"]
+        self.versions = ["190303", "190205", "190204", "190103", "180904", "180804", "180803", "180802", "270204"]
+        self.offsets = ["-28800", "-21600"]
 
     def load_resources(self):
         def read_file(filename):
@@ -39,7 +27,6 @@ class AaayafujAPI:
                     return [line.strip() for line in f.read().splitlines() if line.strip()]
             return []
 
-        # Load resources from root or config folder
         self.locales = read_file("locale_lang.txt")
         self.regions = read_file("region_lang.txt")
         self.timezones = read_file("region_timezone.txt")
@@ -47,21 +34,14 @@ class AaayafujAPI:
         self.room_ids = read_file("room_id.txt")
         self.sessions = read_file("sessions.txt")
         self.devices = read_file(os.path.join("config", "devices.txt"))
-        
-        self.domains = [
-            "api-h2.tiktokv.com", "api22-core-c-useast1a.tiktokv.com", 
-            "api19-core-c-useast1a.tiktokv.com", "api16-core-c-useast1a.tiktokv.com"
-        ]
 
-    def send_views(self, device_data):
+    def send_hit(self, device_data, hit_type="views"):
+        """
+        Sends a single hit (views/likes/shares/favorites) based on device data.
+        """
         try:
-            if not device_data or ':' not in device_data:
-                return False
-                
-            parts = device_data.split(':')
-            if len(parts) < 4: return False
-            
-            did, iid, cdid, oudid = parts[0], parts[1], parts[2], parts[3]
+            if not device_data or ':' not in device_data: return False
+            did, iid, cdid, oudid = device_data.split(':')[:4]
             
             aweme_id = random.choice(self.video_ids) if self.video_ids else "7123456789012345678"
             domain = random.choice(self.domains)
@@ -72,55 +52,38 @@ class AaayafujAPI:
                 "cdid": cdid,
                 "openudid": oudid,
                 "item_id": aweme_id,
-                "play_delta": "1",
-                "device_type": "SM-G960F",
-                "os_version": "10",
-                "version_code": "2022405030",
+                "device_type": "SM-G9900",
+                "os_version": "12",
+                "version_code": random.choice(self.versions),
                 "app_name": "musically_go",
-                "channel": "googleplay",
                 "device_platform": "android",
                 "aid": "1340"
             }
-            
+
+            if hit_type == "views":
+                params["play_delta"] = "1"
+            elif hit_type == "shares":
+                params["share_delta"] = "1"
+
             query_string = urlencode(params)
             sig = Gorgon(params=query_string).get_value()
             
             headers = {
                 "X-Gorgon": sig["X-Gorgon"],
                 "X-Khronos": sig["X-Khronos"],
-                "User-Agent": "com.zhiliaoapp.musically/2022405030 (Linux; U; Android 10; en_US; SM-G960F; Build/QP1A.190711.020; Cronet/58.0.2991.0)",
+                "User-Agent": "com.zhiliaoapp.musically/2022405030 (Linux; U; Android 12; en_US; SM-G9900; Build/SQ1A.211205.008; Cronet/58.0.2991.0)",
                 "Host": domain,
-                "Connection": "Keep-Alive",
-                "Accept-Encoding": "gzip"
+                "Connection": "Keep-Alive"
             }
+
+            url = f"https://{domain}/aweme/v1/aweme/stats/?{query_string}"
+            if hit_type == "favorites":
+                url = f"https://{domain}/aweme/v1/aweme/collect/?aweme_id={aweme_id}&{query_string}"
             
-            # Use verify=False as the original script used unverified context
-            resp = self.session.post(
-                f"https://{domain}/aweme/v1/aweme/stats/?{query_string}", 
-                headers=headers, 
-                timeout=10, 
-                verify=False
-            )
+            resp = self.session.post(url, headers=headers, timeout=10, verify=False)
             
             if resp.status_code == 200:
-                data = resp.json()
-                return data.get('status_code') == 0
+                return resp.json().get('status_code') == 0
             return False
-        except Exception:
+        except:
             return False
-
-    def get_ai_advice(self, query):
-        if not HAS_GENAI:
-            return "AI Error: 'google-generativeai' package not installed."
-        if not self.ai_model:
-            return "AI Core Offline: API_KEY not set in environment variables."
-        
-        prompt = (
-            "You are the Aaayafuj SMM Strategic Advisor. Your task is to provide technical, "
-            "concise, and high-value advice on social media growth. User query: " + query
-        )
-        try:
-            response = self.ai_model.generate_content(prompt)
-            return response.text
-        except Exception as e:
-            return f"Gemini API Error: {str(e)}"

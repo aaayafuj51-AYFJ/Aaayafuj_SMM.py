@@ -1,28 +1,34 @@
 import sys
 import os
+import ssl
+import requests
+from urllib3.exceptions import InsecureRequestWarning
 
-# Add the current directory to sys.path to resolve 'src' imports correctly
+# Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from src.main_menu import MainMenu
-from src.utils import set_console_title
+from src.utils import set_console_title, clear_console
+
+# Global configuration and initialization
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def main():
     """
-    Aaayafuj_SMM.py - Main Entry Point
+    Aaayafuj_SMM.py - High Performance TikTok Bot Core
     """
-    # Set the console title for better UI/UX
-    set_console_title("[Aaayafuj SMM Suite] - TikTok Ultimate Bot Core")
+    set_console_title("[TikTok Ultimate Bot] Aaayafuj_SMM.py")
+    clear_console()
     
     try:
         app = MainMenu()
         app.run()
     except KeyboardInterrupt:
-        print("\n\n[!] Application interrupted by user. Exiting...")
+        print("\n\n[!] Interrupted by user. Exiting...")
         sys.exit(0)
     except Exception as e:
         print(f"\n[FATAL ERROR] {str(e)}")
-        # Print traceback for easier debugging if needed
         import traceback
         traceback.print_exc()
         sys.exit(1)

@@ -3,7 +3,7 @@ import time
 
 class Gorgon:
     """
-    Signature generation logic for Aaayafuj API requests.
+    Signature generation logic for TikTok/Aaayafuj API requests.
     """
     def __init__(self, params: str, cookies: str = None, data: str = None, unix: int = None):
         self.params = params
@@ -18,9 +18,13 @@ class Gorgon:
             return hashlib.md5(data).hexdigest()
 
     def get_value(self):
-        # Implementation of signature logic
-        # For the full version, specific algorithmic shifts are applied here
+        """
+        Calculates the X-Gorgon and X-Khronos headers.
+        """
+        # Simplified representation of the signature logic
+        # For the full version, we hash the parameters and apply specific offsets
+        gorgon_hash = self.hash(self.params)
         return {
-            "X-Gorgon": "8402005" + self.hash(self.params)[:16],
+            "X-Gorgon": "8402005" + gorgon_hash[:16],
             "X-Khronos": str(self.unix)
         }
