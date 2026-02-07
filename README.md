@@ -1,3 +1,5 @@
+<img width="1089" height="605" alt="Aaayafuj SMM Suite Banner" src="https://github.com/user-attachments/assets/a16d974e-60c8-4587-8e22-896455646824" />
+
 # 🚀 Aaayafuj_SMM.py
 
 > **Ultimate TikTok & Social Media Marketing Automation Suite**
