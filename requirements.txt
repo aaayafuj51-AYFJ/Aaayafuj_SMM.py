@@ -1,0 +1,6 @@
+requests
+pystyle
+google-generativeai
+beautifulsoup4
+html5lib
+urllib3

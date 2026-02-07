@@ -1,0 +1,29 @@
+
+{
+  "services": [
+    {
+      "id": "ig_f_001",
+      "platform": "Instagram",
+      "name": "High Quality Followers",
+      "rate_per_1k": 2.50,
+      "min": 100,
+      "max": 50000
+    },
+    {
+      "id": "tt_l_001",
+      "platform": "TikTok",
+      "name": "Instant Video Likes",
+      "rate_per_1k": 0.85,
+      "min": 500,
+      "max": 100000
+    },
+    {
+      "id": "yt_v_001",
+      "platform": "YouTube",
+      "name": "Real Viewers (Monetizable)",
+      "rate_per_1k": 4.20,
+      "min": 1000,
+      "max": 1000000
+    }
+  ]
+}

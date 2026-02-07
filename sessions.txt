@@ -1,0 +1,2 @@
+session_placeholder_1
+session_placeholder_2

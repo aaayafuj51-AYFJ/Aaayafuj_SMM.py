@@ -1,0 +1,7 @@
+{
+  "name": "Aaayafuj SMM Suite",
+  "description": "A high-performance Social Media Marketing dashboard and strategy engine powered by Gemini AI, based on the Aaayafuj_SMM core.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

@@ -1,0 +1,4 @@
+America/New_York
+Europe/London
+Europe/Madrid
+Europe/Paris
