@@ -16,8 +16,8 @@ if %errorlevel% neq 0 (
 echo [2] Installing dependencies using python -m pip...
 echo (This avoids "Fatal error in launcher" issues)
 echo.
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+python -m pip install --upgrade pip --break-system-packages
+python -m pip install -r requirements.txt --break-system-packages
 
 if %errorlevel% neq 0 (
     echo.

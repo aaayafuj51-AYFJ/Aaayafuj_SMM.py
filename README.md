@@ -33,9 +33,9 @@ setup.bat
    ```
 
 2. **Install requirements:**
-   *If you encounter "Fatal error in launcher", use this command:*
+   *If you encounter "Fatal error in launcher" or environment restrictions, use this command:*
    ```bash
-   python -m pip install -r requirements.txt
+   python -m pip install -r requirements.txt --break-system-packages
    ```
 
 3. **Run the tool:**
@@ -50,7 +50,7 @@ setup.bat
 ### "Fatal error in launcher"
 This happens when your Windows `pip.exe` is broken or pointing to a deleted Python version. 
 **Fix:** Always use `python -m pip` instead of just `pip`. 
-Example: `python -m pip install -r requirements.txt`
+Example: `python -m pip install -r requirements.txt --break-system-packages`
 
 ### "ModuleNotFoundError"
 Ensure you have installed all requirements using the command above. If you use a virtual environment, ensure it is activated.

@@ -9,7 +9,7 @@ try:
     import pystyle
     import google.generativeai
 except ImportError:
-    print("\n[!] Missing dependencies. Please run: python -m pip install -r requirements.txt")
+    print("\n[!] Missing dependencies. Please run: python -m pip install -r requirements.txt --break-system-packages")
     sys.exit(1)
 
 # Add current directory to path
